@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Task_Manager
 {
@@ -22,7 +23,15 @@ namespace Task_Manager
     {
         public MainWindow()
         {
+
+            //Display Date and Time
             InitializeComponent();
+            DispatcherTimer timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, 
+                delegate{
+                this.Time.Text = DateTime.Now.ToString("h:mm tt");
+                this.Date.Text = DateTime.Now.ToString("dddd, \n MMMM dd, yyyy");
+            }, 
+            this.Dispatcher);
         }
     }
 }

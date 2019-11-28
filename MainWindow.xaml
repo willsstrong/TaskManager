@@ -5,12 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task_Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Task Manager" Height="911" Width="399" ResizeMode="NoResize" SizeToContent="Height">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="85*"/>
-            <ColumnDefinition Width="311*"/>
+            <ColumnDefinition Width="140*"/>
+            <ColumnDefinition Width="253*"/>
         </Grid.ColumnDefinitions>
-
+        <ListBox x:Name="listBox" HorizontalAlignment="Right" Height="672" Margin="0,200,10,0" VerticalAlignment="Top" Width="233" Grid.Column="1"/>
+        <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,120,0,0" Grid.ColumnSpan="2" Height="50" Width="373" FontSize="36" RenderTransformOrigin="0.496,-0.625"/>
+        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="105" Width="373" FontSize="36"><Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/></TextBlock>
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="35,200,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="35,270,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="button2" Content="Button" HorizontalAlignment="Left" Margin="35,340,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.467,-1"/>
     </Grid>
 </Window>
