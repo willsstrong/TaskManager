@@ -6,16 +6,48 @@
         xmlns:local="clr-namespace:Task_Manager"
         mc:Ignorable="d"
         Title="Task Manager" Height="911" Width="399" ResizeMode="NoResize" SizeToContent="Height">
+    <Window.Resources>
+        <Style x:Key="CanvasStyle1" TargetType="{x:Type Canvas}"/>
+    </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="140*"/>
-            <ColumnDefinition Width="253*"/>
-        </Grid.ColumnDefinitions>
-        <ListBox x:Name="listBox" HorizontalAlignment="Right" Height="672" Margin="0,200,10,0" VerticalAlignment="Top" Width="233" Grid.Column="1"/>
-        <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,120,0,0" Grid.ColumnSpan="2" Height="50" Width="373" FontSize="36" RenderTransformOrigin="0.496,-0.625"/>
-        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="105" Width="373" FontSize="36"><Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/></TextBlock>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="35,200,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="35,270,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="button2" Content="Button" HorizontalAlignment="Left" Margin="35,340,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.467,-1"/>
+        <!--            Time and Date Display       -->
+        <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,120,10,0" Grid.ColumnSpan="2" Height="50" Width="373" FontSize="36" RenderTransformOrigin="0.496,-0.625"/>
+        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="105" Width="373" FontSize="36"><Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/></TextBlock>
+
+        <!--            Task Item List              -->
+        <ItemsControl  x:Name="listBox" HorizontalAlignment="Right" Height="697" Margin="0,175,10,0" VerticalAlignment="Top" Width="373">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <!--            Add New Task Screen         -->
+        <Grid x:Name="OverLay" Panel.ZIndex="1" Visibility="Visible">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.5" />
+            </Grid.Background>
+            <Grid Background="White" HorizontalAlignment="Center" Height="440" Margin="25,180,28,262" VerticalAlignment="Center" Width="340" RenderTransformOrigin="0.5,0.5" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="27*"/>
+                    <RowDefinition Height="7*"/>
+                </Grid.RowDefinitions>
+                <Grid.Effect>
+                    <DropShadowEffect/>
+                </Grid.Effect>
+                <Label Margin="10,12,240,10" Content="Task Name"/>
+                <TextBox x:Name="TaskName" Margin="130,16,10,10" Text="Build Taks List"/>
+                <Label Margin="10,12,240,10" Content="Due Date" Grid.Row="1"/>
+                <DatePicker HorizontalAlignment="Left" Margin="130,13,0,10" Grid.Row="1" Width="200"/>
+                <Label Margin="10,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
+                <TextBox Background="Wheat"  x:Name="TaskNotes" Padding="10" HorizontalAlignment="Left" Margin="10,48,0,10" Grid.Row="2" TextWrapping="Wrap" Text="Enter Details" Width="320" Cursor="IBeam" IsEnabled="True" SpellCheck.IsEnabled="True" AcceptsTab="True" AcceptsReturn="True"/>
+                <Button x:Name="cmdCloseAdd" Content="Close" HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" Height="20"/>
+                <Button x:Name="cmdSaveNew" Content="Save" HorizontalAlignment="Left" Margin="210,25,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" Height="20"/>
+            </Grid>
+        </Grid>
+        <DatePicker HorizontalAlignment="Left" Margin="158,251,0,0" VerticalAlignment="Top" Width="192"/>
     </Grid>
 </Window>
