@@ -7,24 +7,48 @@
         mc:Ignorable="d"
         Title="Task Manager" Height="911" Width="399" ResizeMode="NoResize" SizeToContent="Height">
     <Window.Resources>
-        <Style x:Key="CanvasStyle1" TargetType="{x:Type Canvas}"/>
+        <!--        Template for Diplaying Task in the List Box         -->
+        <DataTemplate x:Key="TaskItemTemplate">
+            <Border BorderThickness="1" CornerRadius="8" BorderBrush="#8c8d8f" Background="#a5a6a8" 
+                    HorizontalAlignment="Stretch" Width="Auto" Height="50">
+                <Grid Margin="2" Width="350" Height="50" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Foreground="#f5f7f2" Text="{Binding TaskName}" Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding IsComplete}" Grid.Column="1" Background="Gray" Foreground="Red" FontStretch="Normal" FontSize="20"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        
     </Window.Resources>
+    
+    <!--        Main Window         -->
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="19*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110*"/>
+            <ColumnDefinition Width="170*"/>
+            <ColumnDefinition Width="110*"/>
+        </Grid.ColumnDefinitions>
         <!--            Time and Date Display       -->
-        <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,120,10,0" Grid.ColumnSpan="2" Height="50" Width="373" FontSize="36" RenderTransformOrigin="0.496,-0.625"/>
-        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="105" Width="373" FontSize="36"><Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/></TextBlock>
+        <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,120,10,0" Grid.ColumnSpan="3" Height="50" Width="373" FontSize="36" RenderTransformOrigin="0.496,-0.625"/>
+        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="105" Width="373" FontSize="36"><Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/></TextBlock>
 
-        <Button x:Name="CmdNewTask" Height="30" Width="100"  Margin="145,175,148,677"
-                Click="NewTask_Click" Content="New Task"/>
+        <Button x:Name="CmdNewTask"  Margin="25,175,30,335"
+                Click="NewTask_Click" Content="New Task" Grid.Column="1"/>
 
         <!--            Task Item List              -->
-        <ListBox  x:Name="listBox" HorizontalAlignment="Right" Height="662" Margin="0,210,10,0" VerticalAlignment="Top" Width="373" ScrollViewer.VerticalScrollBarVisibility="Auto">
-
- 
-        </ListBox>
+        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="657" Margin="0,225,0,0" VerticalAlignment="Top" 
+                  Width="393" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.RowSpan="2" 
+                  ItemTemplate="{StaticResource TaskItemTemplate}"/>
 
         <!--            Add New Task Screen         -->
-        <Grid x:Name="NewTaskOverLay" Panel.ZIndex="1" Visibility="Hidden">
+        <Grid x:Name="NewTaskOverLay" Panel.ZIndex="1" Visibility="Hidden" Grid.ColumnSpan="3" Grid.RowSpan="2">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5" />
             </Grid.Background>

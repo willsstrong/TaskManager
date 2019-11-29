@@ -1,19 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Task_Manager.Models;
 
 namespace Task_Manager
@@ -24,25 +12,40 @@ namespace Task_Manager
     public partial class MainWindow : Window
     {
         private TaskModel DbContext = new TaskModel();
+        private List<TaskItem> taskItems = new List<TaskItem>();
 
         public MainWindow()
         {
 
             //Display Date and Time
             InitializeComponent();
-            DispatcherTimer timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, 
+            System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer(new TimeSpan(0, 0, 1), System.Windows.Threading.DispatcherPriority.Normal, 
                 delegate{
                 this.Time.Text = DateTime.Now.ToString("h:mm tt");
                 this.Date.Text = DateTime.Now.ToString("dddd, \n MMMM dd, yyyy");
             }, 
             this.Dispatcher);
 
-            var tasks = from s in DbContext.Tasks select s;
-            var TaskList = tasks.ToList();
+            //var tasks = from s in DbContext.Tasks select s;
+            //var TaskList = tasks.ToList();
 
+            //Test Data for Task ListBox
+            taskItems.Add(new TaskItem() 
+            {
+                    TaskName = "Build Task Manager",
+                    DueDate = new DateTime(2019,12,02),
+                    IsComplete = true,
+                    TaskNotes = 
+                    " - See Current Data in the App \n" +
+                    " - Create a new Task \n" +
+                    " - Name and Rename Taskt \n" +
+                    " - Assign a due date \n" +
+                    " - Mark as Completed \n" +
+                    " - Delete Tasks (that are no longer important)\n" +
+                    " - Highlight completed tasks in green, and over due in red"
+            });
 
-
-
+            TaskListBox.ItemsSource = taskItems;        //Display task data in ListBox
         }
         
 
@@ -59,12 +62,13 @@ namespace Task_Manager
 
         private void CmdSaveNew_Click(object sender, RoutedEventArgs e)
         {
-            var newTask = new Tasks { TaskName = TxtTaskName.Text , DueDate = NewDueDate.SelectedDate.Value};
+            var newTask = new TaskItem { TaskName = TxtTaskName.Text , DueDate = NewDueDate.SelectedDate.Value};
+            taskItems.Add(newTask);
 
-            DbContext.Tasks.Add(newTask);
-            DbContext.SaveChanges();
-                
-           NewTaskOverLay.Visibility = Visibility.Collapsed;
+            //DbContext.Tasks.Add(newTask);
+            //DbContext.SaveChanges();
+             
+            NewTaskOverLay.Visibility = Visibility.Collapsed;
         }
     }
 
