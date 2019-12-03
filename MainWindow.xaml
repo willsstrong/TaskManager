@@ -6,13 +6,13 @@
         mc:Ignorable="d"
         xmlns:local="clr-namespace:Task_Manager"
         Title="Task Manager" Height="911" Width="399" ResizeMode="NoResize" SizeToContent="Height">
-        
+
     <Window.Resources>
         <local:DueDateHighlight x:Key="dateConverter"/>
         <!--        Template for Diplaying Task in the List Box         -->
         <DataTemplate x:Key="TaskItemTemplate">
-            <Border BorderThickness="1" CornerRadius="8" BorderBrush="#8c8d8f"  
-                     Width="Auto" Height="50">
+            <Border BorderThickness="1" CornerRadius="2" BorderBrush="#8c8d8f"  
+                     Width="378" Height="50">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{Binding DueDate, Converter={StaticResource dateConverter}}"/>
@@ -32,9 +32,9 @@
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding TaskName}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <CheckBox Name="TaskComplete" Margin="2"  IsChecked="{Binding IsComplete}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                    <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=TaskName}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <CheckBox Name="TaskComplete" Margin="2"  IsChecked="{Binding Path=IsComplete, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -53,19 +53,20 @@
             <ColumnDefinition Width="110*"/>
         </Grid.ColumnDefinitions>
         <!--            Time and Date Display       -->
-        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,0" TextWrapping="Wrap" Grid.ColumnSpan="3" Width="373" FontSize="30" Height="105" VerticalAlignment="Top">
-                    <Run Text="Wednesday,"/><LineBreak/><Run Text="January 23, 1982"/>
+        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,0" TextWrapping="Wrap" Grid.ColumnSpan="3" Width="373" FontSize="24" Height="35" VerticalAlignment="Top">
+                    <Run Text="Wednesday, January 23, 1982"/>
         </TextBlock>
         <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" 
-                   Text="TextBlock" VerticalAlignment="Top" Margin="10,120,10,0" Grid.ColumnSpan="3" Height="50" Width="373" 
-                   FontSize="25" RenderTransformOrigin="0.496,-0.625"/>
+                   Text="TextBlock" VerticalAlignment="Top" Margin="10,60,10,0" Grid.ColumnSpan="3" Height="30" Width="373" 
+                   FontSize="20" RenderTransformOrigin="0.496,-0.625"/>
 
-        <Button x:Name="CmdNewTask"  Margin="25,175,30,335"
-                Click="NewTask_Click" Content="New Task" Grid.Column="1"/>
+        <Button x:Name="CmdNewTask"  Margin="29,115,26,395"
+                Click="NewTask_Click" Content="New Task" Grid.Column="1" RenderTransformOrigin="0.509,-0.667"/>
 
         <!--            Task Item List              -->
-        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="657" Margin="0,225,0,0" VerticalAlignment="Top" 
-                  Width="393" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.RowSpan="2" 
+        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="707" Margin="0,175,0,0" VerticalAlignment="Top" 
+                  Width="393" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Grid.RowSpan="2"
+                  ItemsSource="{Binding Source=testItem}"
                   ItemTemplate="{StaticResource TaskItemTemplate}"/>
 
         <!--            Add New Task Screen         -->
@@ -84,15 +85,16 @@
                     <DropShadowEffect/>
                 </Grid.Effect>
                 <Label Margin="10,12,240,10" Content="Task Name"/>
-                <TextBox x:Name="TxtTaskName" Margin="130,16,10,10" >
-                </TextBox>
+                <TextBox x:Name="NewTaskName" Margin="130,16,10,10"/>
+
                 <Label Margin="10,12,240,10" Content="Due Date" Grid.Row="1"/>
                 <DatePicker Name="NewDueDate" HorizontalAlignment="Left" Margin="130,13,0,10" Grid.Row="1" Width="200"/>
                 <Label Margin="10,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
-                <TextBox Background="Wheat"  x:Name="TaskNotes" Padding="10" 
+                <TextBox x:Name="NewTaskNotes" Background="Wheat" Padding="10" 
                          HorizontalAlignment="Left" Margin="10,48,0,10" Grid.Row="2" TextWrapping="Wrap" 
                          Text="Enter Details" Width="320" Cursor="IBeam" IsEnabled="True" SpellCheck.IsEnabled="True" 
-                         AcceptsTab="True" AcceptsReturn="True"/>
+                         AcceptsTab="True" AcceptsReturn="True"
+                         />
                 <Button x:Name="cmdCloseAdd" Click="CmdCloseAdd_Click"  Content="Close" 
                         HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="3" VerticalAlignment="Top" 
                         Width="75" Height="20"/>

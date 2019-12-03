@@ -14,7 +14,7 @@ namespace Task_Manager
 
     [ValueConversion(typeof(DateTime),typeof(Brush))]
     public class DueDateHighlight : IValueConverter
-    //Return a preset value of Brushes.[colour] depending on relation of current date to TaskItem.DueDate
+    //Return a preset value of Brushes.[colour] depending on relation of current date to DueDate 
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
