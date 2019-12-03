@@ -108,6 +108,11 @@
     </ApplicationDefinition>
     <Compile Include="DueDateHighlight.cs" />
     <Compile Include="Models\TaskItem.cs" />
+    <Compile Include="TasksDBDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TasksDBDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\TaskDB.cs" />
     <Page Include="Styles.xaml">
       <SubType>Designer</SubType>
@@ -148,6 +153,17 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="TasksDBDataSet.xsc">
+      <DependentUpon>TasksDBDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="TasksDBDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>TasksDBDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="TasksDBDataSet.xss">
+      <DependentUpon>TasksDBDataSet.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

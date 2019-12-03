@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Data.OleDb;
 using System.Windows;
 using System.Windows.Threading;
+using Task_Manager.Models;
 using Task_Manager.ViewModels;
 
 namespace Task_Manager
@@ -28,8 +29,8 @@ namespace Task_Manager
                 Date.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
             }, Dispatcher);
 
-            BindingList<TaskItem> testItem = new BindingList<TaskItem>();
-            testItem.Add(new TaskItem()
+            BindingList<Models.Tasks> testItem = new BindingList<Models.Tasks>();
+            testItem.Add(new Models.Tasks()
             {
                 TaskName = "Test task",
                 DueDate = DateTime.Now.Date,
@@ -53,55 +54,29 @@ namespace Task_Manager
 
         private void CmdSaveNew_Click(object sender, RoutedEventArgs e)
         {
-           
-            string ConString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
-            string sqlString = "INSERT INTO Tasks (TaskName, DueDate,TaskNotes) Values ('" + NewTaskName.Text + "','" + NewDueDate.Text + "','" + NewTaskNotes.Text + "')";
-            OleDbConnection connection = new OleDbConnection(ConString);
-            OleDbCommand command = new OleDbCommand(sqlString, connection);
-            DataSet newDataSet = new DataSet();
-            OleDbDataAdapter dataAdapter = new OleDbDataAdapter();
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
+            //Create TaskItem List of value from New Task fields
+
+            List<Models.Tasks> taskItems = new List<Models.Tasks>();
+            taskItems.Add(new Models.Tasks()
+            {
+                TaskName = NewTaskName.Text,
+                DueDate = NewDueDate.SelectedDate.Value.Date,
+                TaskNotes = NewTaskNotes.Text
+            });
+
+            TaskDB.SaveTask(taskItems);
 
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             NewTaskOverLay.Visibility = Visibility.Collapsed;
         }
+
+        private void DeleteTask_Click(object sender, RoutedEventArgs e)
+        {
+            //MessageBoxButton.OKCancel;
+            MessageBox.Show("Are you sure you want to delete this task?");
+
+            TaskDB.DeleteTask(TaskListBox.SelectedValue);
+            TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
+        }
     }
-
 }
-
-
-//Test Data for Task ListBox
-//taskItems.Add(new TaskItem()
-//{
-//    TaskName = "Build Task Manager",
-//                    DueDate = new DateTime(2019, 12, 04),
-//                    IsComplete = false,
-//                    TaskNotes =
-//                    " - See Current Data in the App \n" +
-//                    " - Create a new Task \n" +
-//                    " - Name and Rename Taskt \n" +
-//                    " - Assign a due date \n" +
-//                    " - Mark as Completed \n" +
-//                    " - Delete Tasks (that are no longer important)\n" +
-//                    " - Highlight completed tasks in green, and over due in red"
-//            });
-//            taskItems.Add(new TaskItem()
-//{
-//    TaskName = "Overdue Task",
-//                DueDate = new DateTime(2019, 11, 29),
-//                IsComplete = false,
-//            });
-//            taskItems.Add(new TaskItem()
-//{
-//    TaskName = "Completed Task",
-//                DueDate = new DateTime(2019, 12, 05),
-//                IsComplete = true,
-//            });
-//            taskItems.Add(new TaskItem()
-//{
-//    TaskName = "No Rush Task",
-//                DueDate = new DateTime(2019, 12, 15),
-//                IsComplete = false,
-//            });
