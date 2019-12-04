@@ -78,5 +78,13 @@ namespace Task_Manager
             TaskDB.DeleteTask(TaskListBox.SelectedValue);
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
         }
+
+        private void EditTask_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO  Enable text control on form to be editable
+            //      Load into List
+            //      SaveTask(<List>);
+            //reload TaskListBox
+        }
     }
 }

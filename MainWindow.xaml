@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         xmlns:local="clr-namespace:Task_Manager"
         Title="Task Manager" Height="911" Width="399" ResizeMode="NoResize" SizeToContent="Height"
-        Background="DarkGray">
+        Background="DarkGray" WindowStyle="ToolWindow">
 
     <Window.Resources>
         <Style TargetType="ListBoxItem">
@@ -21,6 +21,9 @@
             <Border BorderThickness="1" CornerRadius="2" BorderBrush="#8c8d8f"
                     HorizontalAlignment="Center"
                     Width="352" MinHeight="50" MaxHeight="200" Margin="1">
+                <Border.Effect>
+                    <DropShadowEffect/>
+                </Border.Effect>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Background" Value="{Binding DueDate, Converter={StaticResource dateConverter}}"/>
@@ -44,16 +47,16 @@
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Margin="2" Foreground="#f5f7f2"  Text="{Binding Path=TaskName}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock Margin="2" Foreground="#f5f7f2"  Text="{Binding Path=TaskName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
                             <CheckBox  Name="TaskComplete" Margin="2" IsChecked="{Binding Path=IsComplete, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" RenderTransformOrigin="-0.062,0.6"/>
                             <Button x:Name="DeleteTask" Background="Transparent" Click="DeleteTask_Click"  Content="X" 
                                     Width="27" Height="20" Grid.Column="1" BorderThickness="0" FontSize="16" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" FontStyle="Oblique" RenderTransformOrigin="-1.5,0.85" Margin="0,2,2,3"/>
-                            <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Arrow"/>
                         </Grid>
                     </Expander.Header>
                     <StackPanel Margin="2">
                         <DockPanel Height="140">
-                            <TextBlock Height="200" Text="{Binding Path=TaskNotes}"></TextBlock>
+                            <TextBlock Height="200" Text="{Binding Path=TaskNotes}" IsEnabled="True"/>
                             <Button x:Name="TaskEdit" Content="Edit" Width="80" Height="30" 
                                     HorizontalAlignment="Left" VerticalAlignment="Bottom" />
                         </DockPanel>
@@ -68,8 +71,8 @@
     <!--        Main Window         -->
     <Grid Margin="10,0,4,0" >
         <Grid.RowDefinitions>
-            <RowDefinition Height="80*"/>
-            <RowDefinition Height="361*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="391*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="110*"/>
@@ -77,18 +80,49 @@
             <ColumnDefinition Width="110*"/>
         </Grid.ColumnDefinitions>
         <!--            Time and Date Display       -->
-        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="3,10,3,0" TextWrapping="Wrap" Grid.ColumnSpan="3" Width="373" FontSize="24" Height="35" VerticalAlignment="Top">
+        <TextBlock x:Name="Date" TextAlignment="Center" HorizontalAlignment="Center" Margin="3,10,3,0" TextWrapping="Wrap" Grid.ColumnSpan="3" Width="373" FontSize="24" Height="35" VerticalAlignment="Top" FontWeight="Bold">
                     <Run Text="Wednesday, January 23, 1982"/>
         </TextBlock>
         <TextBlock x:Name="Time" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" 
-                   Text="TextBlock" VerticalAlignment="Top" Margin="3,60,3,0" Grid.ColumnSpan="3" Height="30" Width="373" 
-                   FontSize="20" RenderTransformOrigin="0.496,-0.625"/>
+                   Text="TextBlock" VerticalAlignment="Top" Margin="148,60,12,0" Height="30" Width="112" 
+                   FontSize="20" RenderTransformOrigin="0.496,-0.625" Grid.Column="1" Grid.ColumnSpan="2" />
+        <!--            'Add New' Button            -->
+        <Button x:Name="CmdNewTask"  Margin="0,55,47,0"
+                Click="NewTask_Click" RenderTransformOrigin="0.509,-0.667" FontSize="36" FontWeight="Bold" Height="35" VerticalAlignment="Top" HorizontalAlignment="Right" Width="36">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Ellipse Stroke="Black"
+                         StrokeThickness="0">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Offset="0"
+                                          Color="Silver" />
+                                    <GradientStop Offset="0"
+                                          Color="DarkGray" />
+                                    <GradientStop Offset="3"
+                                          Color="Black" />
+                                    <RadialGradientBrush.Transform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleY="1" />
+                                        </TransformGroup>
+                                    </RadialGradientBrush.Transform>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
 
-        <Button x:Name="CmdNewTask"  Margin="29,115,26,10"
-                Click="NewTask_Click" Content="New Task" Grid.Column="1" RenderTransformOrigin="0.509,-0.667"/>
+                        </Ellipse>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+            <Border BorderBrush="{x:Null}" Height="20">
+                <TextBlock Text="+" VerticalAlignment="Center" Margin="0,-18,0,-14" Height="52"/>
+            </Border>
+        </Button>
 
         <!--            Task Item List              -->
-        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="707" Margin="0,4,12,0" VerticalAlignment="Top" 
+        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="707" Margin="3,10,9,0" VerticalAlignment="Top" 
                   Width="367" ScrollViewer.VerticalScrollBarVisibility="Hidden"  Grid.ColumnSpan="3"
                   ItemTemplate="{StaticResource TaskItemTemplate}"
                   DataContext="{Binding}"
@@ -96,16 +130,15 @@
                   BorderThickness="0"
                   Background="Transparent" Grid.Row="1"
                   SelectedValuePath="ID">
-  
         </ListBox>
 
 
         <!--            Add New Task Screen         -->
-        <Grid x:Name="NewTaskOverLay" Panel.ZIndex="1" Visibility="Hidden" Grid.ColumnSpan="3" Grid.RowSpan="2">
+        <Grid x:Name="NewTaskOverLay" Panel.ZIndex="1" Visibility="Collapsed" Grid.ColumnSpan="3" Grid.RowSpan="2" Margin="-10,0,-11,0" HorizontalAlignment="Right" Width="400">
             <Grid.Background>
                 <SolidColorBrush Color="Black" Opacity="0.5" />
             </Grid.Background>
-            <Grid Background="White" HorizontalAlignment="Center" Height="440" Margin="25,180,28,262" VerticalAlignment="Center" Width="340" RenderTransformOrigin="0.5,0.5" >
+            <Grid Background="White" HorizontalAlignment="Center" Height="440" Margin="25,110,35,332" VerticalAlignment="Center" Width="340" RenderTransformOrigin="0.5,0.5" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="5*"/>
                     <RowDefinition Height="50"/>
@@ -115,15 +148,15 @@
                 <Grid.Effect>
                     <DropShadowEffect/>
                 </Grid.Effect>
-                <Label Margin="10,12,240,10" Content="Task Name"/>
-                <TextBox x:Name="NewTaskName" Margin="130,16,10,10"/>
+                <Label Margin="22,12,240,10" Content="Task Name"/>
+                <TextBox x:Name="NewTaskName" Margin="105,16,35,10"/>
 
-                <Label Margin="10,12,240,10" Content="Due Date" Grid.Row="1"/>
-                <DatePicker Name="NewDueDate" HorizontalAlignment="Left" Margin="130,13,0,10" Grid.Row="1" Width="200"/>
-                <Label Margin="10,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
+                <Label Margin="22,12,240,10" Content="Due Date" Grid.Row="1"/>
+                <DatePicker Name="NewDueDate" HorizontalAlignment="Left" Margin="105,13,0,10" Grid.Row="1" Width="200"/>
+                <Label Margin="22,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
                 <TextBox x:Name="NewTaskNotes" Background="Wheat" Padding="10" 
-                         HorizontalAlignment="Left" Margin="10,48,0,10" Grid.Row="2" TextWrapping="Wrap" 
-                         Text="Enter Details" Width="320" Cursor="IBeam" IsEnabled="True" SpellCheck.IsEnabled="True" 
+                         HorizontalAlignment="Left" Margin="22,48,0,10" Grid.Row="2" TextWrapping="Wrap" 
+                         Text="Enter Details" Width="295" Cursor="IBeam" IsEnabled="True" SpellCheck.IsEnabled="True" 
                          AcceptsTab="True" AcceptsReturn="True"
                          />
                 <Button x:Name="cmdCloseAdd" Click="CmdCloseAdd_Click"  Content="Close" 
