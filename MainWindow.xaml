@@ -20,50 +20,52 @@
         <DataTemplate x:Key="TaskItemTemplate">
             <Border BorderThickness="1" CornerRadius="2" BorderBrush="#8c8d8f"
                     HorizontalAlignment="Center"
-                    Width="352" MinHeight="50" MaxHeight="200" Margin="1">
-                <Border.Effect>
-                    <DropShadowEffect/>
-                </Border.Effect>
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background" Value="{Binding DueDate, Converter={StaticResource dateConverter}}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsComplete}" Value="True">
-                                <Setter Property="Background" Value="Green"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+                    Width="341" MinHeight="50" MaxHeight="200" Margin="0,1">
+                    <Border.Effect>
+                        <DropShadowEffect/>
+                    </Border.Effect>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{Binding DueDate, Converter={StaticResource dateConverter}}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsComplete}" Value="True">
+                                    <Setter Property="Background" Value="Green"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
 
-                <Expander Grid.Row="2">
-                    <Expander.Header>
-                        <Grid Width="311" Height="50" HorizontalAlignment="Center" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Margin="2" Foreground="#f5f7f2"  Text="{Binding Path=TaskName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"/>
-                            <CheckBox  Name="TaskComplete" Margin="2" IsChecked="{Binding Path=IsComplete, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" RenderTransformOrigin="-0.062,0.6"/>
-                            <Button x:Name="DeleteTask" Background="Transparent" Click="DeleteTask_Click"  Content="X" 
+                    <Expander Grid.Row="2">
+                        <Expander.Header>
+                            <Grid Width="311" Height="50" HorizontalAlignment="Center" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <CheckBox  Name="TaskComplete" Margin="2" IsChecked="{Binding Path=IsComplete, Mode=TwoWay}" Content="{Binding Path=TaskName}" 
+                                       Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                       RenderTransformOrigin="-0.062,0.6" FontSize="20" Foreground="White"
+                                       Click="TaskComplete_Click"/>
+                                <Button x:Name="DeleteTask" Background="Transparent" Click="DeleteTask_Click"  Content="X" 
                                     Width="27" Height="20" Grid.Column="1" BorderThickness="0" FontSize="16" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" FontStyle="Oblique" RenderTransformOrigin="-1.5,0.85" Margin="0,2,2,3"/>
-                            <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Arrow"/>
-                        </Grid>
-                    </Expander.Header>
-                    <StackPanel Margin="2">
-                        <DockPanel Height="140">
-                            <TextBlock Height="200" Text="{Binding Path=TaskNotes}" IsEnabled="True"/>
-                            <Button x:Name="TaskEdit" Content="Edit" Width="80" Height="30" 
+                                <TextBlock Margin="2" Foreground="#f5f7f2" Text="{Binding Path=DueDate}" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Cursor="Arrow"/>
+                            </Grid>
+                        </Expander.Header>
+                        <StackPanel Margin="2">
+                            <DockPanel Height="140">
+                                <TextBlock Height="200" Text="{Binding Path=TaskNotes}" IsEnabled="True"/>
+                                <Button x:Name="TaskEdit" Content="Edit" Width="80" Height="30" 
                                     HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                        </DockPanel>
-                    </StackPanel>
-                </Expander>
+                            </DockPanel>
+                        </StackPanel>
+                    </Expander>
 
-            </Border>
+                </Border>
         </DataTemplate>
 
     </Window.Resources>
@@ -122,11 +124,10 @@
         </Button>
 
         <!--            Task Item List              -->
-        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="707" Margin="3,10,9,0" VerticalAlignment="Top" 
+        <ListBox  x:Name="TaskListBox" HorizontalAlignment="Center" Height="745" Margin="3,10,9,0" VerticalAlignment="Top" 
                   Width="367" ScrollViewer.VerticalScrollBarVisibility="Hidden"  Grid.ColumnSpan="3"
-                  ItemTemplate="{StaticResource TaskItemTemplate}"
                   DataContext="{Binding}"
-                  ItemsSource="{Binding Source=testItem}"
+                  ItemTemplate="{StaticResource TaskItemTemplate}"  
                   BorderThickness="0"
                   Background="Transparent" Grid.Row="1"
                   SelectedValuePath="ID">

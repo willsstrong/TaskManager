@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data.OleDb;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Task_Manager.Models;
@@ -15,8 +17,9 @@ namespace Task_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string ConnectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;//uses connection string from App.config
-        TaskDB TaskDB = new TaskDB(ConnectionString);   //TaskBD.cs contains driver code for interacting with the database
+        private static string ConnectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;//uses connection string from App.config
+        private static  TaskDB TaskDB = new TaskDB(ConnectionString);   //TaskBD.cs contains driver code for interacting with the database
+        private BindingList<Tasks> taskList = TaskDB.ListTasks();   //Create Binding List and load from database
 
         public MainWindow()
         {
@@ -29,15 +32,7 @@ namespace Task_Manager
                 Date.Text = DateTime.Now.ToString("dddd, MMMM dd, yyyy");
             }, Dispatcher);
 
-            BindingList<Models.Tasks> testItem = new BindingList<Models.Tasks>();
-            testItem.Add(new Models.Tasks()
-            {
-                TaskName = "Test task",
-                DueDate = DateTime.Now.Date,
-                IsComplete = false
-            }) ;
-
-            TaskListBox.ItemsSource = TaskDB.ListTasks(); //Loads table data into ListBox
+            TaskListBox.ItemsSource = TaskDB.ListTasks(); //Loads TaskList data into ListBox
 
         }
 
@@ -56,7 +51,7 @@ namespace Task_Manager
         {
             //Create TaskItem List of value from New Task fields
 
-            List<Models.Tasks> taskItems = new List<Models.Tasks>();
+            List<Tasks> taskItems = new List<Tasks>();
             taskItems.Add(new Models.Tasks()
             {
                 TaskName = NewTaskName.Text,
@@ -69,6 +64,8 @@ namespace Task_Manager
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             NewTaskOverLay.Visibility = Visibility.Collapsed;
         }
+
+      
 
         private void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
@@ -85,6 +82,45 @@ namespace Task_Manager
             //      Load into List
             //      SaveTask(<List>);
             //reload TaskListBox
+        }
+
+        private void TaskComplete_Checked(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void TaskComplete_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TaskComplete_Click(object sender, RoutedEventArgs e)
+        {
+            List<Tasks> SelectedTask = new List<Tasks>();
+            SelectedTask.Add(new Tasks
+            {
+                ID = (int)TaskListBox.SelectedValue,
+                TaskName = (TaskListBox.SelectedItem as Tasks).TaskName,
+                DueDate = (TaskListBox.SelectedItem as Tasks).DueDate,
+                TaskNotes = (TaskListBox.SelectedItem as Tasks).TaskNotes,
+                IsComplete = (TaskListBox.SelectedItem as Tasks).IsComplete
+            });
+
+            string sqlCom = "UPDATE Tasks SET IsComplete = @IsComplete WHERE ID = @ID";
+
+
+            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
+            {
+                connection.Open();
+                using (OleDbCommand command = new OleDbCommand(sqlCom, connection))
+                {
+                    command.Parameters.AddWithValue("@IsComplete", (TaskListBox.SelectedItem as Tasks).IsComplete);
+                    command.Parameters.AddWithValue("@ID", TaskListBox.SelectedValue);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
+            //TaskDB.SaveTask(SelectedTask);
         }
     }
 }

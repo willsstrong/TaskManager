@@ -399,10 +399,10 @@ namespace Task_Manager {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public TasksRow AddTasksRow(int ID, string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete) {
+            public TasksRow AddTasksRow(string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete) {
                 TasksRow rowTasksRow = ((TasksRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        ID,
+                        null,
                         TaskName,
                         DueDate,
                         TaskNotes,
@@ -458,6 +458,9 @@ namespace Task_Manager {
                 base.Columns.Add(this.columnIsComplete);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
+                this.columnID.AutoIncrement = true;
+                this.columnID.AutoIncrementSeed = -1;
+                this.columnID.AutoIncrementStep = -1;
                 this.columnID.AllowDBNull = false;
                 this.columnID.Unique = true;
                 this.columnTaskName.MaxLength = 255;
@@ -906,19 +909,17 @@ namespace Task_Manager.TasksDBDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("Original_IsComplete", global::System.Data.OleDb.OleDbType.Boolean, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "IsComplete", global::System.Data.DataRowVersion.Original, false, null));
             this._adapter.InsertCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = "INSERT INTO `Tasks` (`ID`, `TaskName`, `DueDate`, `TaskNotes`, `IsComplete`) VALU" +
-                "ES (?, ?, ?, ?, ?)";
+            this._adapter.InsertCommand.CommandText = "INSERT INTO `Tasks` (`TaskName`, `DueDate`, `TaskNotes`, `IsComplete`) VALUES (?," +
+                " ?, ?, ?)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("TaskName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "TaskName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("DueDate", global::System.Data.OleDb.OleDbType.Date, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "DueDate", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("TaskNotes", global::System.Data.OleDb.OleDbType.LongVarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "TaskNotes", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("IsComplete", global::System.Data.OleDb.OleDbType.Boolean, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "IsComplete", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand = new global::System.Data.OleDb.OleDbCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE `Tasks` SET `ID` = ?, `TaskName` = ?, `DueDate` = ?, `TaskNotes` = ?, `IsComplete` = ? WHERE ((`ID` = ?) AND ((? = 1 AND `TaskName` IS NULL) OR (`TaskName` = ?)) AND ((? = 1 AND `DueDate` IS NULL) OR (`DueDate` = ?)) AND ((? = 1 AND `IsComplete` IS NULL) OR (`IsComplete` = ?)))";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE `Tasks` SET `TaskName` = ?, `DueDate` = ?, `TaskNotes` = ?, `IsComplete` = ? WHERE ((`ID` = ?) AND ((? = 1 AND `TaskName` IS NULL) OR (`TaskName` = ?)) AND ((? = 1 AND `DueDate` IS NULL) OR (`DueDate` = ?)) AND ((? = 1 AND `IsComplete` IS NULL) OR (`IsComplete` = ?)))";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("ID", global::System.Data.OleDb.OleDbType.Integer, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "ID", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("TaskName", global::System.Data.OleDb.OleDbType.VarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "TaskName", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("DueDate", global::System.Data.OleDb.OleDbType.Date, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "DueDate", global::System.Data.DataRowVersion.Current, false, null));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.OleDb.OleDbParameter("TaskNotes", global::System.Data.OleDb.OleDbType.LongVarWChar, 0, global::System.Data.ParameterDirection.Input, ((byte)(0)), ((byte)(0)), "TaskNotes", global::System.Data.DataRowVersion.Current, false, null));
@@ -1039,22 +1040,21 @@ namespace Task_Manager.TasksDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(int ID, string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete) {
-            this.Adapter.InsertCommand.Parameters[0].Value = ((int)(ID));
+        public virtual int Insert(string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete) {
             if ((TaskName == null)) {
                 throw new global::System.ArgumentNullException("TaskName");
             }
             else {
-                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(TaskName));
+                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(TaskName));
             }
-            this.Adapter.InsertCommand.Parameters[2].Value = ((System.DateTime)(DueDate));
+            this.Adapter.InsertCommand.Parameters[1].Value = ((System.DateTime)(DueDate));
             if ((TaskNotes == null)) {
-                this.Adapter.InsertCommand.Parameters[3].Value = global::System.DBNull.Value;
+                this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(TaskNotes));
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(TaskNotes));
             }
-            this.Adapter.InsertCommand.Parameters[4].Value = ((bool)(IsComplete));
+            this.Adapter.InsertCommand.Parameters[3].Value = ((bool)(IsComplete));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1075,34 +1075,33 @@ namespace Task_Manager.TasksDBDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(int ID, string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete, int Original_ID, string Original_TaskName, System.DateTime Original_DueDate, bool Original_IsComplete) {
-            this.Adapter.UpdateCommand.Parameters[0].Value = ((int)(ID));
+        public virtual int Update(string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete, int Original_ID, string Original_TaskName, System.DateTime Original_DueDate, bool Original_IsComplete) {
             if ((TaskName == null)) {
                 throw new global::System.ArgumentNullException("TaskName");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[1].Value = ((string)(TaskName));
+                this.Adapter.UpdateCommand.Parameters[0].Value = ((string)(TaskName));
             }
-            this.Adapter.UpdateCommand.Parameters[2].Value = ((System.DateTime)(DueDate));
+            this.Adapter.UpdateCommand.Parameters[1].Value = ((System.DateTime)(DueDate));
             if ((TaskNotes == null)) {
-                this.Adapter.UpdateCommand.Parameters[3].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(TaskNotes));
+                this.Adapter.UpdateCommand.Parameters[2].Value = ((string)(TaskNotes));
             }
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((bool)(IsComplete));
-            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(Original_ID));
+            this.Adapter.UpdateCommand.Parameters[3].Value = ((bool)(IsComplete));
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_ID));
             if ((Original_TaskName == null)) {
                 throw new global::System.ArgumentNullException("Original_TaskName");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_TaskName));
+                this.Adapter.UpdateCommand.Parameters[5].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[6].Value = ((string)(Original_TaskName));
             }
-            this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
-            this.Adapter.UpdateCommand.Parameters[9].Value = ((System.DateTime)(Original_DueDate));
-            this.Adapter.UpdateCommand.Parameters[10].Value = ((object)(0));
-            this.Adapter.UpdateCommand.Parameters[11].Value = ((bool)(Original_IsComplete));
+            this.Adapter.UpdateCommand.Parameters[7].Value = ((object)(0));
+            this.Adapter.UpdateCommand.Parameters[8].Value = ((System.DateTime)(Original_DueDate));
+            this.Adapter.UpdateCommand.Parameters[9].Value = ((object)(0));
+            this.Adapter.UpdateCommand.Parameters[10].Value = ((bool)(Original_IsComplete));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1117,14 +1116,6 @@ namespace Task_Manager.TasksDBDataSetTableAdapters {
                     this.Adapter.UpdateCommand.Connection.Close();
                 }
             }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string TaskName, System.DateTime DueDate, string TaskNotes, bool IsComplete, int Original_ID, string Original_TaskName, System.DateTime Original_DueDate, bool Original_IsComplete) {
-            return this.Update(Original_ID, TaskName, DueDate, TaskNotes, IsComplete, Original_ID, Original_TaskName, Original_DueDate, Original_IsComplete);
         }
     }
     

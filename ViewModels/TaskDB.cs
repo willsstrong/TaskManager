@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 using Task_Manager.Models;
 
 namespace Task_Manager.ViewModels
@@ -22,9 +23,21 @@ namespace Task_Manager.ViewModels
             ConnectionString = connectionString;
         }
 
+        private string SqlString(OleDbCommand commandText)      // Returns text of 
+        {
+            string query = commandText.CommandText;
+
+            foreach (OleDbParameter p in commandText.Parameters)
+            {
+                query = query.Replace(p.ParameterName, p.Value.ToString());
+            }
+
+            return query;
+        }
+
 
         /**         GET TASK DATE       **/
-        public BindingList<Models.Tasks> ListTasks()
+        public BindingList<Tasks> ListTasks()
         {
             ErrorMsg = null;
             BindingList<Models.Tasks> taskItems = new BindingList<Models.Tasks>();
@@ -54,6 +67,8 @@ namespace Task_Manager.ViewModels
                             }
                         }
                     }
+
+                    connection.Close();
                 }
                 catch (Exception ReadError)
                 {
@@ -64,8 +79,9 @@ namespace Task_Manager.ViewModels
             return taskItems;
         }
         /**         SAVE NEW/UPDATED TASK TO DB          **/
-        public void SaveTask(List<Models.Tasks> taskList)
+        public void SaveTask(List<Tasks> taskList)
         {
+            //plan B for updating records:      Delete record matching ID then save Edited record as new one.
             ErrorMsg = null;
 
             using (OleDbConnection connection = new OleDbConnection(ConnectionString))
@@ -74,22 +90,24 @@ namespace Task_Manager.ViewModels
                 {
                     connection.Open();
                     string sqlInsert = "INSERT INTO Tasks (TaskName, DueDate, TaskNotes, IsComplete) VALUES (@TaskName,@DueDate,@TaskNotes,@IsComplete)";
-                    string sqlUpade = "UPDATE TasksDB " +
-                                      "SET..." +
-                                      "WHERE TaskID = @TaskID";
-                    //string sqlDelete = "DELETE FROM TasksDB";
+                    string sqlUpade = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate, TaskNotes = @TaskNotes, IsComplete = @IsComplete WHERE ID = @ID";
 
-                    foreach(Models.Tasks task in taskList)
+                    foreach(Tasks task in taskList)
                     {
                         using(OleDbCommand command = new OleDbCommand(task.ID == -1? sqlInsert : sqlUpade, connection))
                         //An ID of -1 indicates that this is a new Item and an INSERT command will execute, otherwise UPDATE
                         {
-                            if (task.ID != -1) command.Parameters.AddWithValue("@ID", task.ID);
+                            if (task.ID != -1) 
+                                command.Parameters.AddWithValue("@ID", task.ID);
                             command.Parameters.AddWithValue("@TaskName", task.TaskName);
                             command.Parameters.AddWithValue("@DueDate", task.DueDate);
                             command.Parameters.AddWithValue("@TaskNotes", task.TaskNotes);
                             command.Parameters.AddWithValue("@IsComplete", task.IsComplete);
 
+
+
+                            string query = SqlString(command); //for debugging 
+                                
                             command.ExecuteNonQuery();
                         }
                     }
@@ -99,10 +117,14 @@ namespace Task_Manager.ViewModels
 
                     ErrorMsg = $"Error Saving to database, Exception:{SaveError.Message}";
                 }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
         /**         Remove Task From Database       **/
-        public void DeleteTask(object taskItem)
+        public void DeleteTask(object Task_SelectedValue)
         {
             ErrorMsg = null;
             using(OleDbConnection connection = new OleDbConnection(ConnectionString))
@@ -114,15 +136,18 @@ namespace Task_Manager.ViewModels
 
                         using (OleDbCommand command = new OleDbCommand(sqlDelete, connection))
                         {
-                            command.Parameters.AddWithValue("@ID", taskItem);
+                            command.Parameters.AddWithValue("@ID", Task_SelectedValue);
                             command.ExecuteScalar();
                         }
                     
                 }
                 catch (Exception DelError)
                 {
-
                     ErrorMsg = $"Error deleting from database, Exception: {DelError.Message}";
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
         }

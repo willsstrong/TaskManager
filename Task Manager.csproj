@@ -107,7 +107,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DueDateHighlight.cs" />
-    <Compile Include="Models\TaskItem.cs" />
+    <Compile Include="Models\Tasks.cs" />
     <Compile Include="TasksDBDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
