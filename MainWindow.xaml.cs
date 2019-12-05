@@ -60,7 +60,7 @@ namespace Task_Manager
             });
 
             TaskDB.SaveTask(taskItems);
-
+            taskItems.Clear();
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             NewTaskOverLay.Visibility = Visibility.Collapsed;
         }
@@ -70,44 +70,30 @@ namespace Task_Manager
         private void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
             //MessageBoxButton.OKCancel;
-            MessageBox.Show("Are you sure you want to delete this task?");
-
-            TaskDB.DeleteTask(TaskListBox.SelectedValue);
-            TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
+            MessageBoxResult option = MessageBox.Show("Are you sure you want to delete this task?","Delete",MessageBoxButton.OKCancel);
+            if (!(option == MessageBoxResult.Cancel))
+            {
+                TaskDB.DeleteTask(TaskListBox.SelectedValue);
+                TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
+            }
         }
 
-        private void EditTask_Click(object sender, RoutedEventArgs e)
+
+        private void TaskEdit_Click(object sender, RoutedEventArgs e)
         {
-            //TODO  Enable text control on form to be editable
-            //      Load into List
-            //      SaveTask(<List>);
-            //reload TaskListBox
+            //create task object.
+            
+            Tasks tasks = (TaskListBox.SelectedItem as Tasks);  //Create Tasks object from Selected TaskList Item
+            //TaskToUpdate.Add(tasks);
+            //poputate form
+            UpdateTaskName.Text = tasks.TaskName;
+            UpdateDueDate.SelectedDate = tasks.DueDate;
+            UpdateTaskNotes.Text = tasks.TaskNotes;
+            EditTaskOverLay.Visibility = Visibility.Visible;
         }
-
-        private void TaskComplete_Checked(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void TaskComplete_Unchecked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void TaskComplete_Click(object sender, RoutedEventArgs e)
         {
-            List<Tasks> SelectedTask = new List<Tasks>();
-            SelectedTask.Add(new Tasks
-            {
-                ID = (int)TaskListBox.SelectedValue,
-                TaskName = (TaskListBox.SelectedItem as Tasks).TaskName,
-                DueDate = (TaskListBox.SelectedItem as Tasks).DueDate,
-                TaskNotes = (TaskListBox.SelectedItem as Tasks).TaskNotes,
-                IsComplete = (TaskListBox.SelectedItem as Tasks).IsComplete
-            });
-
             string sqlCom = "UPDATE Tasks SET IsComplete = @IsComplete WHERE ID = @ID";
-
-
             using (OleDbConnection connection = new OleDbConnection(ConnectionString))
             {
                 connection.Open();
@@ -120,7 +106,32 @@ namespace Task_Manager
                 connection.Close();
             }
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
-            //TaskDB.SaveTask(SelectedTask);
         }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            string sqlCom = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate,TaskNotes = @TaskNotes WHERE ID = @ID";
+            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
+            {
+                connection.Open();
+                using (OleDbCommand command = new OleDbCommand(sqlCom, connection))
+                {
+                    command.Parameters.AddWithValue("@TaskName",  UpdateTaskName.Text);
+                    command.Parameters.AddWithValue("@DueDate",  UpdateDueDate.SelectedDate.Value);
+                    command.Parameters.AddWithValue("@TaskNotes", UpdateTaskNotes.Text);
+                    command.Parameters.AddWithValue("@ID", TaskListBox.SelectedValue);
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
+            EditTaskOverLay.Visibility = Visibility.Collapsed;
+        }
+
+        private void CloseUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            EditTaskOverLay.Visibility = Visibility.Collapsed;
+        }
+
     }
 }

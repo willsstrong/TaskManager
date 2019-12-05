@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.OleDb;
-using System.Data.SqlClient;
 using Task_Manager.Models;
 
 namespace Task_Manager.ViewModels
@@ -40,7 +39,7 @@ namespace Task_Manager.ViewModels
         public BindingList<Tasks> ListTasks()
         {
             ErrorMsg = null;
-            BindingList<Models.Tasks> taskItems = new BindingList<Models.Tasks>();
+            BindingList<Tasks> taskItems = new BindingList<Tasks>();
             using (OleDbConnection connection = new OleDbConnection(ConnectionString))
             {
                 try
