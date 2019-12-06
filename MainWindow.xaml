@@ -9,21 +9,11 @@
         Background="DarkGray" WindowStyle="ToolWindow">
 
     <Window.Resources>
-        <Style TargetType="ListBoxItem">
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                 
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        
         <local:DueDateHighlight x:Key="dateConverter"/>
         <!--        Template for Diplaying Task in the List Box         -->
         <DataTemplate x:Key="TaskItemTemplate">
-            <DataTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Selector.IsSelected" Value="True"/>
-                </Trigger>
-            </DataTemplate.Triggers>
+
             <Border BorderThickness="1" CornerRadius="2" BorderBrush="#8c8d8f"
                     HorizontalAlignment="Center"
                     Width="341" MinHeight="50" MaxHeight="200" Margin="0,1">
@@ -132,7 +122,7 @@
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="Blue"/>
+                                    <Setter Property="Foreground" Value="Blue"/> <!-- May have to make a mouse-event handler to get ListBox.SelectedItem   -->
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -149,6 +139,15 @@
                   BorderThickness="0"
                   Background="Transparent" Grid.Row="1"
                   SelectedValuePath="ID">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Self}}" Value="True">
+                            <Setter Property="IsSelected" Value="True"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Resources>
         </ListBox>
 
 
@@ -201,27 +200,26 @@
                 <Grid.Effect>
                     <DropShadowEffect/>
                 </Grid.Effect>
-                
 
-                    <Label Margin="22,12,240,10" Content="Task Name"/>
-                    <TextBox x:Name="UpdateTaskName" Margin="105,16,35,10" />
 
-                    <Label Margin="22,12,240,10" Content="Due Date" Grid.Row="1"/>
-                    <DatePicker Name="UpdateDueDate" HorizontalAlignment="Left" Margin="105,13,0,10" Grid.Row="1" Width="200"/>
-                    <Label Margin="22,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
-                    <TextBox x:Name="UpdateTaskNotes" Background="Wheat" Padding="10" 
+                <Label Margin="22,12,240,10" Content="Task Name"/>
+                <TextBox x:Name="UpdateTaskName" Margin="105,16,35,10" />
+
+                <Label Margin="22,12,240,10" Content="Due Date" Grid.Row="1"/>
+                <DatePicker Name="UpdateDueDate" HorizontalAlignment="Left" Margin="105,13,0,10" Grid.Row="1" Width="200"/>
+                <Label Margin="22,10,240,227" Content="Details" Grid.Row="2" RenderTransformOrigin="1.611,0.455"/>
+                <TextBox x:Name="UpdateTaskNotes" Background="Wheat" Padding="10" 
                          HorizontalAlignment="Left" Margin="22,48,0,10" Grid.Row="2" TextWrapping="Wrap" 
                          Text="Enter Details" Width="295" Cursor="IBeam" IsEnabled="True" SpellCheck.IsEnabled="True" 
                          AcceptsTab="True" AcceptsReturn="True"
                          />
-                    <Button x:Name="cmdCloseUpdate" Click="CloseUpdate_Click"  Content="Close" 
+                <Button x:Name="cmdCloseUpdate" Click="CloseUpdate_Click"  Content="Close" 
                         HorizontalAlignment="Left" Margin="50,25,0,0" Grid.Row="3" VerticalAlignment="Top" 
                         Width="75" Height="20"/>
-                    <Button x:Name="cmdUpdate" Click="Update_Click"  Content="Save" HorizontalAlignment="Left" 
+                <Button x:Name="cmdUpdate" Click="Update_Click"  Content="Save" HorizontalAlignment="Left" 
                         Margin="210,25,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" Height="20"/>
-              
+
             </Grid>
         </Grid>
-
     </Grid>
 </Window>

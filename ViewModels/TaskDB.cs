@@ -35,7 +35,7 @@ namespace Task_Manager.ViewModels
         }
 
 
-        /**         GET TASK DATE       **/
+        /**         GET TASK        **/
         public BindingList<Tasks> ListTasks()
         {
             ErrorMsg = null;
@@ -77,7 +77,7 @@ namespace Task_Manager.ViewModels
             }
             return taskItems;
         }
-        /**         SAVE NEW/UPDATED TASK TO DB          **/
+        /**         SAVE NEW TASK          **/
         public void SaveTask(Tasks task)
         {
             ErrorMsg = null;
@@ -110,6 +110,7 @@ namespace Task_Manager.ViewModels
             }
         }
 
+        /**         Update Task         **/
         public void UpdateTask(Tasks task)
         {
             ErrorMsg = null;
@@ -143,7 +144,7 @@ namespace Task_Manager.ViewModels
             }
         }
         /**         Remove Task From Database       **/
-        public void DeleteTask(object Task_SelectedValue)
+        public void DeleteTask(int Task_SelectedValue)
         {
             ErrorMsg = null;
             using (OleDbConnection connection = new OleDbConnection(ConnectionString))

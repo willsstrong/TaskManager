@@ -76,20 +76,26 @@ namespace Task_Manager
 
         private void DeleteTask_Click(object sender, RoutedEventArgs e)
         {
+            int SelectedValue = (int)TaskListBox.SelectedValue;
+            
             //MessageBoxButton.OKCancel;
             MessageBoxResult option = MessageBox.Show("Are you sure you want to delete this task?","Delete",MessageBoxButton.OKCancel);
+
+            
             if (!(option == MessageBoxResult.Cancel))
             {
-                TaskDB.DeleteTask(TaskListBox.SelectedValue);
+                TaskDB.DeleteTask(SelectedValue);
                 TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             }
         }
 
-
+        private int EditItemIndex = 0;
         private void TaskEdit_Click(object sender, RoutedEventArgs e)
         {
             //create task object.
-            
+
+            EditItemIndex = (int)TaskListBox.SelectedValue;
+
             Tasks tasks = (TaskListBox.SelectedItem as Tasks);  //Create Tasks object from Selected TaskList Item
             //TaskToUpdate.Add(tasks);
             //poputate form
@@ -100,6 +106,8 @@ namespace Task_Manager
         }
         private void TaskComplete_Click(object sender, RoutedEventArgs e)
         {
+            int SelectedItemValue = (int)TaskListBox.SelectedValue;
+
             Tasks task = (TaskListBox.SelectedItem as Tasks);
 
             TaskDB.UpdateTask(task);
@@ -111,13 +119,11 @@ namespace Task_Manager
 
             Tasks task = new Tasks()
             {
-                ID = (int)TaskListBox.SelectedValue,
+                ID = EditItemIndex,
                 TaskName = UpdateTaskName.Text,
                 DueDate = UpdateDueDate.SelectedDate.Value,
                 TaskNotes = UpdateTaskNotes.Text
             };
-
-            //string sqlCom = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate,TaskNotes = @TaskNotes WHERE ID = @ID";
 
             TaskDB.UpdateTask(task);
                         
