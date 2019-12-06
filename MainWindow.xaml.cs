@@ -52,14 +52,21 @@ namespace Task_Manager
             //Create TaskItem List of value from New Task fields
 
             List<Tasks> taskItems = new List<Tasks>();
-            taskItems.Add(new Models.Tasks()
+            taskItems.Add(new Tasks()
             {
                 TaskName = NewTaskName.Text,
                 DueDate = NewDueDate.SelectedDate.Value.Date,
                 TaskNotes = NewTaskNotes.Text
             });
 
-            TaskDB.SaveTask(taskItems);
+            Tasks task = new Tasks()
+            {
+                TaskName = NewTaskName.Text,
+                DueDate = NewDueDate.SelectedDate.Value.Date,
+                TaskNotes = NewTaskNotes.Text
+            };
+
+            TaskDB.SaveTask(task);
             taskItems.Clear();
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             NewTaskOverLay.Visibility = Visibility.Collapsed;
@@ -93,37 +100,27 @@ namespace Task_Manager
         }
         private void TaskComplete_Click(object sender, RoutedEventArgs e)
         {
-            string sqlCom = "UPDATE Tasks SET IsComplete = @IsComplete WHERE ID = @ID";
-            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
-            {
-                connection.Open();
-                using (OleDbCommand command = new OleDbCommand(sqlCom, connection))
-                {
-                    command.Parameters.AddWithValue("@IsComplete", (TaskListBox.SelectedItem as Tasks).IsComplete);
-                    command.Parameters.AddWithValue("@ID", TaskListBox.SelectedValue);
-                    command.ExecuteNonQuery();
-                }
-                connection.Close();
-            }
+            Tasks task = (TaskListBox.SelectedItem as Tasks);
+
+            TaskDB.UpdateTask(task);
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            string sqlCom = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate,TaskNotes = @TaskNotes WHERE ID = @ID";
-            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
+
+            Tasks task = new Tasks()
             {
-                connection.Open();
-                using (OleDbCommand command = new OleDbCommand(sqlCom, connection))
-                {
-                    command.Parameters.AddWithValue("@TaskName",  UpdateTaskName.Text);
-                    command.Parameters.AddWithValue("@DueDate",  UpdateDueDate.SelectedDate.Value);
-                    command.Parameters.AddWithValue("@TaskNotes", UpdateTaskNotes.Text);
-                    command.Parameters.AddWithValue("@ID", TaskListBox.SelectedValue);
-                    command.ExecuteNonQuery();
-                }
-                connection.Close();
-            }
+                ID = (int)TaskListBox.SelectedValue,
+                TaskName = UpdateTaskName.Text,
+                DueDate = UpdateDueDate.SelectedDate.Value,
+                TaskNotes = UpdateTaskNotes.Text
+            };
+
+            //string sqlCom = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate,TaskNotes = @TaskNotes WHERE ID = @ID";
+
+            TaskDB.UpdateTask(task);
+                        
             TaskListBox.ItemsSource = TaskDB.ListTasks(); //ReLoad table data into ListBox
             EditTaskOverLay.Visibility = Visibility.Collapsed;
         }

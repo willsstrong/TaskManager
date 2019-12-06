@@ -78,9 +78,8 @@ namespace Task_Manager.ViewModels
             return taskItems;
         }
         /**         SAVE NEW/UPDATED TASK TO DB          **/
-        public void SaveTask(List<Tasks> taskList)
+        public void SaveTask(Tasks task)
         {
-            //plan B for updating records:      Delete record matching ID then save Edited record as new one.
             ErrorMsg = null;
 
             using (OleDbConnection connection = new OleDbConnection(ConnectionString))
@@ -89,31 +88,52 @@ namespace Task_Manager.ViewModels
                 {
                     connection.Open();
                     string sqlInsert = "INSERT INTO Tasks (TaskName, DueDate, TaskNotes, IsComplete) VALUES (@TaskName,@DueDate,@TaskNotes,@IsComplete)";
-                    string sqlUpade = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate, TaskNotes = @TaskNotes, IsComplete = @IsComplete WHERE ID = @ID";
-
-                    foreach(Tasks task in taskList)
+                    using (OleDbCommand command = new OleDbCommand(sqlInsert, connection))
                     {
-                        using(OleDbCommand command = new OleDbCommand(task.ID == -1? sqlInsert : sqlUpade, connection))
-                        //An ID of -1 indicates that this is a new Item and an INSERT command will execute, otherwise UPDATE
-                        {
-                            if (task.ID != -1) 
-                                command.Parameters.AddWithValue("@ID", task.ID);
-                            command.Parameters.AddWithValue("@TaskName", task.TaskName);
-                            command.Parameters.AddWithValue("@DueDate", task.DueDate);
-                            command.Parameters.AddWithValue("@TaskNotes", task.TaskNotes);
-                            command.Parameters.AddWithValue("@IsComplete", task.IsComplete);
+                        command.Parameters.AddWithValue("@TaskName", task.TaskName);
+                        command.Parameters.AddWithValue("@DueDate", task.DueDate);
+                        command.Parameters.AddWithValue("@TaskNotes", task.TaskNotes);
+                        command.Parameters.AddWithValue("@IsComplete", task.IsComplete);
+                        string query = SqlString(command); //for debugging 
 
-
-
-                            string query = SqlString(command); //for debugging 
-                                
-                            command.ExecuteNonQuery();
-                        }
+                        command.ExecuteNonQuery();
                     }
                 }
                 catch (Exception SaveError)
                 {
+                    ErrorMsg = $"Error Saving to database, Exception:{SaveError.Message}";
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
 
+        public void UpdateTask(Tasks task)
+        {
+            ErrorMsg = null;
+
+            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
+            {                    
+                string sqlUpade = "UPDATE Tasks SET TaskName = @TaskName, DueDate = @DueDate, TaskNotes = @TaskNotes, IsComplete = @IsComplete WHERE ID = @ID";
+
+                try
+                {
+                    connection.Open();
+                    using (OleDbCommand command = new OleDbCommand(sqlUpade, connection))
+                    {
+                        command.Parameters.AddWithValue("@TaskName", task.TaskName);        //UpdateTaskName.Text);
+                        command.Parameters.AddWithValue("@DueDate", task.DueDate);          //UpdateDueDate.SelectedDate.Value);
+                        command.Parameters.AddWithValue("@TaskNotes", task.TaskNotes);      //UpdateTaskNotes.Text);
+                        command.Parameters.AddWithValue("@IsComplete", task.IsComplete);      //UpdateTaskNotes.Text);
+                        command.Parameters.AddWithValue("@ID", task.ID);                    //TaskListBox.SelectedValue);
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+                catch (Exception SaveError)
+                {
                     ErrorMsg = $"Error Saving to database, Exception:{SaveError.Message}";
                 }
                 finally
@@ -126,19 +146,19 @@ namespace Task_Manager.ViewModels
         public void DeleteTask(object Task_SelectedValue)
         {
             ErrorMsg = null;
-            using(OleDbConnection connection = new OleDbConnection(ConnectionString))
+            using (OleDbConnection connection = new OleDbConnection(ConnectionString))
             {
                 try
                 {
                     connection.Open();
                     string sqlDelete = "DELETE FROM Tasks where ID = @ID";
 
-                        using (OleDbCommand command = new OleDbCommand(sqlDelete, connection))
-                        {
-                            command.Parameters.AddWithValue("@ID", Task_SelectedValue);
-                            command.ExecuteScalar();
-                        }
-                    
+                    using (OleDbCommand command = new OleDbCommand(sqlDelete, connection))
+                    {
+                        command.Parameters.AddWithValue("@ID", Task_SelectedValue);
+                        command.ExecuteScalar();
+                    }
+
                 }
                 catch (Exception DelError)
                 {
